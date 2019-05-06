@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,19 +91,19 @@ public class NewUser extends AppCompatActivity {
             String emailId = email.getText().toString();
 
             EditText dobEditor = (EditText) findViewById(R.id.dobEditor);
-            Date dob = DateFormat.formatDate(dobEditor.getText().toString());
+            Date dob = DateFormat.formatDate(dobEditor.getText().toString()); //java.date.tosql ..check forum post
 
             EditText height = (EditText) findViewById(R.id.heightEditor);
-            BigDecimal heightVal = (BigDecimal) height.getText();
+            BigDecimal heightVal = new BigDecimal(height.getText().toString());
 
             EditText weight = (EditText) findViewById(R.id.weightEditor);
-            BigDecimal weightVal = (BigDecimal) weight.getText();
+            BigDecimal weightVal = new BigDecimal(weight.getText().toString());
 
             RadioGroup gender = (RadioGroup) findViewById(R.id.genderEditor);
-            int genderId = gender.getCheckedRadioButtonId();
-
+            int genderSelectedId = gender.getCheckedRadioButtonId();
+            RadioButton genderId = findViewById(genderSelectedId);
             char genderChar = 'M';
-            if (genderId == 1)
+            if (genderId.getText().toString().equals("Female"))
                 genderChar = 'F';
 
             EditText address = (EditText) findViewById(R.id.addEditor);
