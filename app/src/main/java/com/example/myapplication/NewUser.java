@@ -91,7 +91,8 @@ public class NewUser extends AppCompatActivity {
             String emailId = email.getText().toString();
 
             EditText dobEditor = (EditText) findViewById(R.id.dobEditor);
-            Date dob = DateFormat.formatDate(dobEditor.getText().toString()); //java.date.tosql ..check forum post
+            Date dob =  DateFormat.formatDate(dobEditor.getText().toString());
+           // java.sql.Date sqlDob = new java.sql.Date(dob.getTime());
 
             EditText height = (EditText) findViewById(R.id.heightEditor);
             BigDecimal heightVal = new BigDecimal(height.getText().toString());
@@ -124,11 +125,12 @@ public class NewUser extends AppCompatActivity {
             EditText password = (EditText) findViewById(R.id.passwordEditor);
             String passwordVal = password.getText().toString();
 
+            String hashedPassword = HashGenerator.hashCodeGenerator(passwordVal);
             //Creating user object
-            Users user = new Users(SequenceGenerator.getUserUniqueId(), firstName, lastName, emailId, dob, heightVal, weightVal, genderChar, pcode, add, actLevel, spmVal);
+            Users user = new Users(8, firstName, lastName, emailId, dob, heightVal, weightVal, genderChar, pcode, add, actLevel, spmVal);
 
             //Creating credential object
-            Credential credential = new Credential(usernameVal, passwordVal, new Date());
+            Credential credential = new Credential(usernameVal, hashedPassword, new Date(),user);
 
             postUser.execute(user);
             postCredential.execute(credential);

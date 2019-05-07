@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Users {
-    private static final long serialVersionUID = 1L;
+
 
     private Integer userid;
 

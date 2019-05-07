@@ -72,12 +72,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected  void onPostExecute(String credentialJson)
         {
-            Credential userCredential = new Credential();
+            Credential userCredential;
             Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             userCredential = gson.fromJson(credentialJson,Credential.class);
+
+            if(userCredential == null) {
+                Toast.makeText(getApplicationContext(),"Username is incorrect!",Toast.LENGTH_LONG).show();
+                return;
+            }
             String passwordDB = userCredential.getPasswordhash();
             if(passwordDB.toLowerCase().equals(hashInputPswd.toLowerCase())) {
                 Intent intent = new Intent(MainActivity.this,Home.class);
+                Bundle bundle =new Bundle();
+                bundle.putInt("userId",userCredential.getUserid().getUserid());
+                bundle.putString("firstName",userCredential.getUserid().getName());
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
             else

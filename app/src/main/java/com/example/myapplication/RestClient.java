@@ -1,18 +1,21 @@
 package com.example.myapplication;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Scanner;
 
 public class RestClient {
 
     static final String BASE_URL="http://10.0.2.2:8080/CalorieTrackerAssignment/webresources/";
-
+    static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'+'hh:mm";
     public static void createUser(Users user){
         URL url = null;
         HttpURLConnection conn =null;
@@ -20,7 +23,7 @@ public class RestClient {
 
         try
         {
-            Gson gson=new Gson();
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
             String stringUsersJson = gson.toJson(user);
             url=new URL(BASE_URL+path);
 
@@ -32,7 +35,13 @@ public class RestClient {
 
             //sending the post
             sendPost(conn,stringUsersJson);
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
 
+                Log.e("Error Create User Post: ",errorResult);
+            }
         }
         catch(Exception ex)
         {
@@ -53,7 +62,7 @@ public class RestClient {
 
         try
         {
-            Gson gson=new Gson();
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
             String stringCredentialJson = gson.toJson(cred);
             url=new URL(BASE_URL+path);
 
@@ -90,7 +99,7 @@ public class RestClient {
 
             setConnectionParameters(conn,"GET","");
 
-            result = readResponse(conn,result);
+            result = readResponse(conn);
 
         }
         catch (Exception ex)
@@ -103,6 +112,75 @@ public class RestClient {
         }
 
         return result;
+    }
+
+    public static Report findReport(Integer userid, String date)
+    {
+        URL url=null;
+        final String path = "calorietracker.report/findByUseridAndDate/"+userid+"/"+date;
+        HttpURLConnection conn = null;
+        String result = "";
+        Report report = null;
+        try
+        {
+           url = new URL(BASE_URL+path);
+
+           conn = (HttpURLConnection) url.openConnection();
+
+           setConnectionParameters(conn,"GET","");
+
+           result = readResponse(conn);
+
+           Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+           report = gson.fromJson(result,Report.class);
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> findReport",ex.getMessage());
+            report = null;
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> findReport",ex.getMessage());
+        }
+        return report;
+    }
+
+    public static Boolean updateReport(Report report)
+    {
+        URL url=null;
+        final String path = "calorietracker.report/"+report.getReportid();
+        HttpURLConnection conn = null;
+        String reportJson = "";
+        try
+        {
+            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            reportJson = gson.toJson(report);
+            url = new URL(BASE_URL+path);
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            setConnectionParameters(conn,"PUT","");
+
+            sendPost(conn,reportJson);
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Create User Post: ",errorResult);
+                return false;
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> findReport",ex.getMessage());
+        }
+       return true;
     }
 
     public static void setConnectionParameters(HttpURLConnection conn,String methodType,String data) throws java.net.ProtocolException
@@ -122,6 +200,10 @@ public class RestClient {
               conn.setRequestMethod("GET");
               conn.setRequestProperty("Accept","application/json");
           }
+          else if(methodType.equals("PUT"))
+          {
+              conn.setRequestMethod("PUT");
+          }
 
     }
 
@@ -132,9 +214,23 @@ public class RestClient {
         writer.close();
     }
 
-    public static String readResponse(HttpURLConnection conn,String data) throws IOException
+    public static String readResponse(HttpURLConnection conn) throws IOException
     {
+        String data="";
         Scanner scanner = new Scanner(conn.getInputStream());
+
+        while(scanner.hasNextLine())
+        {
+            data += scanner.nextLine();
+        }
+
+        return data;
+    }
+
+    public static String errorResponse(HttpURLConnection conn) throws IOException
+    {
+        String data="";
+        Scanner scanner = new Scanner(conn.getErrorStream());
 
         while(scanner.hasNextLine())
         {
