@@ -36,5 +36,7 @@
 
     <string name="welcomeMessage">Welcome </string>
     <string name="update">Done</string>
+    <string name="menu_dailydiet">Daily Diet</string>
+    <string name="title_activity_navigation_base">NavigationBase</string>
 
 </resources>

@@ -129,6 +129,14 @@ public class RestClient {
 
            setConnectionParameters(conn,"GET","");
 
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Find Report: ",errorResult);
+                return null;
+            }
            result = readResponse(conn);
 
            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
