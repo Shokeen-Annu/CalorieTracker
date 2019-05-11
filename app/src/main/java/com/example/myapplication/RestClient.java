@@ -1,4 +1,5 @@
 package com.example.myapplication;
+import android.accessibilityservice.FingerprintGestureController;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -9,7 +10,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class RestClient {
@@ -85,13 +89,13 @@ public class RestClient {
         }
     }
 
-    public static String findCredential(String username){
+    public static Credential findCredential(String username){
 
         final String path = "calorietracker.credential/"+username;
         URL url=null;
         HttpURLConnection conn = null;
         String result="";
-
+        Credential userCredential=null;
         try
         {
             url =new URL(BASE_URL+path);
@@ -100,6 +104,9 @@ public class RestClient {
             setConnectionParameters(conn,"GET","");
 
             result = readResponse(conn);
+
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            userCredential = gson.fromJson(result,Credential.class);
 
         }
         catch (Exception ex)
@@ -111,7 +118,7 @@ public class RestClient {
             conn.disconnect();
         }
 
-        return result;
+        return userCredential;
     }
 
     public static Report findReport(Integer userid, String date)
@@ -246,5 +253,161 @@ public class RestClient {
         }
 
         return data;
+    }
+
+    public static List<String> getFoodCategories() {
+
+        String path = "calorietracker.food/getCategories";
+        URL url = null;
+        List<String> categoryList = new ArrayList<String>();
+        HttpURLConnection conn=null;
+        String result ="";
+        try
+        {
+            url =new URL(BASE_URL+path);
+            conn = (HttpURLConnection) url.openConnection();
+            setConnectionParameters(conn,"GET","");
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Get Food Categories: ",errorResult);
+                return null;
+            }
+            result = readResponse(conn);
+            String list = result.split(":")[1];
+            String[] categories = list.substring(1,list.length()-2).split(",");
+            categoryList.add("Select Category");
+            for(String item : categories)
+            {
+                categoryList.add(item);
+            }
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getFoodCategories",ex.getMessage());
+        }
+        finally {
+
+            conn.disconnect();
+        }
+        return categoryList;
+    }
+
+    public static Food[] getFoodItems(String param) {
+        String path = "calorietracker.food/findByCategory/"+param;
+        URL url = null;
+
+        HttpURLConnection conn=null;
+        String result ="";
+        Food[] foodItems=null;
+        try
+        {
+            url =new URL(BASE_URL+path);
+            conn = (HttpURLConnection) url.openConnection();
+            setConnectionParameters(conn,"GET","");
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Get Food Items: ",errorResult);
+                return null;
+            }
+            result = readResponse(conn);
+            Gson gson=new Gson();
+            foodItems = gson.fromJson(result,Food[].class);
+
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getFoodItems",ex.getMessage());
+        }
+        finally {
+
+            conn.disconnect();
+        }
+        return foodItems;
+    }
+    //Test on empty table
+    public static int getMaxConsumptionId()
+    {
+        String path = "calorietracker.consumption/getMaxConsumptionId";
+        URL url = null;
+        int maxId=0;
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Get Max consumption id: ",errorResult);
+                return maxId;
+            }
+            maxId = Integer.parseInt(readResponse(conn));
+        }
+        catch(Exception ex)
+        {
+            maxId = 0;
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getMaxConsumptionId",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  maxId;
+    }
+    public static void createConsumption(Consumption consumption){
+        URL url = null;
+        HttpURLConnection conn =null;
+        final String path = "calorietracker.consumption/";
+
+        try
+        {
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            String consumptionJson = gson.toJson(consumption);
+            url=new URL(BASE_URL+path);
+
+            //opening connection
+            conn=(HttpURLConnection)url.openConnection();
+
+            //setting connection parameters
+            setConnectionParameters(conn,"POST",consumptionJson);
+
+            //sending the post
+            sendPost(conn,consumptionJson);
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Create Consumption Post: ",errorResult);
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> createConsumption",ex.getMessage());
+        }
+        finally {
+            conn.disconnect();
+        }
+
     }
 }

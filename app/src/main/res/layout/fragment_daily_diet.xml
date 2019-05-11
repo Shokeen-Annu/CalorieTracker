@@ -2,14 +2,85 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_horizontal_margin">
+    android:padding="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="50dp"
+    android:orientation="vertical">
 
 
 
    <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_marginTop="200dp"
-       android:text="reached"/>
+       android:layout_marginTop="10dp"
+       android:text="@string/foodCategory"/>
+
+   <Spinner
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="40dp"
+       android:id="@+id/foodCategoryList">
+
+   </Spinner>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="80dp"
+       android:text="@string/foodItems"/>
+   <Spinner
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="120dp"
+       android:id="@+id/foodItemsList">
+
+   </Spinner>
+   <android.support.design.widget.TextInputLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="160dp">
+
+      <EditText
+          android:id="@+id/foodQuantity"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/quantity"
+          />
+   </android.support.design.widget.TextInputLayout>
+   <Button
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent"
+       android:layout_marginTop="220dp"
+       android:id="@+id/addFood"
+       android:text="@string/add"/>
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent"
+       android:layout_marginTop="280dp"
+       android:text="@string/searchFood"/>
+
+   <android.support.design.widget.TextInputLayout
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent"
+       android:layout_marginTop="340dp">
+      <EditText
+          android:layout_width="200dp"
+          android:layout_height="match_parent"
+          android:id="@+id/keyword"
+          android:hint="@string/keyword"/>
+   </android.support.design.widget.TextInputLayout>
+   <Button
+       android:layout_width="30dp"
+       android:layout_height="40dp"
+       android:layout_marginTop="350dp"
+       android:layout_marginLeft="210dp"
+       android:id="@+id/search"
+       android:background="@drawable/search_icon"/>
+
+   <ImageView
+       android:layout_width="60dp"
+       android:layout_height="60dp"
+       android:layout_marginTop="410dp"
+       android:id="@+id/searchResult"/>
 
 </RelativeLayout>

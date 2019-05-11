@@ -1,9 +1,14 @@
 package com.example.myapplication;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class Users {
+public class Users implements Parcelable {
 
 
     private Integer userid;
@@ -148,29 +153,62 @@ public class Users {
         this.stepspermile = stepspermile;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (userid != null ? userid.hashCode() : 0);
-        return hash;
-    }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Users)) {
-            return false;
-        }
-        Users other = (Users) object;
-        if ((this.userid == null && other.userid != null) || (this.userid != null && !this.userid.equals(other.userid))) {
-            return false;
-        }
-        return true;
-    }
+    public Users(Parcel in)
+    {
+        try {
+            this.userid = in.readInt();
+            this.name = in.readString();
+            this.surname = in.readString();
+            this.email = in.readString();
 
-    @Override
-    public String toString() {
-        return "calorietracker.Users[ userid=" + userid + " ]";
+            this.dob = (java.util.Date)in.readSerializable();
+            this.height = new BigDecimal(in.readDouble());
+            this.weight = new BigDecimal(in.readDouble());
+            this.gender =in.readString().toCharArray()[0];
+            this.postcode = in.readString();
+            this.address = in.readString();
+            this.levelofactivity = (short)in.readInt();
+            this.stepspermile = in.readInt();
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
+    public void writeToParcel(Parcel parcel, int flags) {
+        try {
+            parcel.writeInt(userid);
+            parcel.writeString(name);
+            parcel.writeString(surname);
+            parcel.writeString(email);
+            parcel.writeString(dob.toString());
+            parcel.writeDouble(height.doubleValue());
+            parcel.writeDouble(weight.doubleValue());
+            parcel.writeString(Character.toString(gender));
+            parcel.writeString(postcode);
+            parcel.writeString(address);
+            parcel.writeInt(levelofactivity);
+            parcel.writeInt(stepspermile);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    public int describeContents() {
+        return 0;
+    }
+    public static final Creator<Users> CREATOR = new Creator<Users>() {
+        @Override
+        public Users createFromParcel(Parcel in) {
+            return new Users(in);
+        }
+        @Override
+        public Users[] newArray(int size) {
+            return new Users[size];
+        }
+    };
+
 
 }

@@ -38,5 +38,12 @@
     <string name="update">Done</string>
     <string name="menu_dailydiet">Daily Diet</string>
     <string name="title_activity_navigation_base">NavigationBase</string>
+    <string name="foodCategory">Food Categories</string>
+    <string name="foodItems">Food Items</string>
+    <string name="quantity">Quantity</string>
+    <string name="message">Daily diet added successfully.</string>
+    <string name="add">Add</string>
+    <string name="searchFood">Search and add new Food item to the list!</string>
+    <string name="keyword">Search here...</string>
 
 </resources>

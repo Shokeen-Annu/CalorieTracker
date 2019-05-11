@@ -61,20 +61,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class LoginAsyncTask extends AsyncTask<String,Void,String>
+    private class LoginAsyncTask extends AsyncTask<String,Void,Credential>
     {
         @Override
-        protected String doInBackground(String... params)
+        protected Credential doInBackground(String... params)
         {
             return RestClient.findCredential(params[0]);
         }
 
         @Override
-        protected  void onPostExecute(String credentialJson)
+        protected  void onPostExecute(Credential userCredential)
         {
-            Credential userCredential;
-            Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            userCredential = gson.fromJson(credentialJson,Credential.class);
+
 
             if(userCredential == null) {
                 Toast.makeText(getApplicationContext(),"Username is incorrect!",Toast.LENGTH_LONG).show();
@@ -86,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle =new Bundle();
                 bundle.putInt("userId",userCredential.getUserid().getUserid());
                 bundle.putString("firstName",userCredential.getUserid().getName());
+                bundle.putParcelable("userObject",userCredential.getUserid());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

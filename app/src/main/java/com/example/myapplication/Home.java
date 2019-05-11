@@ -18,14 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -116,6 +108,7 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_daily_diet) {
 
           fragment = new DailyDietFragment();
+          fragment.setArguments(bundle);
 
         } else if (id == R.id.nav_slideshow) {
 
