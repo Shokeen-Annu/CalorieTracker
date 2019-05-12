@@ -46,7 +46,6 @@ public class Home extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-      //  getSupportActionBar().setTitle("Navigation Drawer");
 
         // Opening default screen i.e. NavigationBase screen
         Intent intent=getIntent();
@@ -110,7 +109,9 @@ public class Home extends AppCompatActivity
           fragment = new DailyDietFragment();
           fragment.setArguments(bundle);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_steps) {
+            fragment = new UserStepsFragment();
+            fragment.setArguments(bundle);
 
         } else if (id == R.id.nav_tools) {
 

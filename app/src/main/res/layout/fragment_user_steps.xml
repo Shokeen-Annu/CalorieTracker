@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="619dp"
+    android:padding="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="50dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp">
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/addStepsEditor"
+            android:hint="@string/steps"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="130dp"
+        android:id="@+id/addStepsButton"
+        android:text="@string/add"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time"
+            />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/updateStepsEditor"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/updateStepsButton"
+            android:text="@string/update"/>
+
+    </ListView>
+
+</RelativeLayout>

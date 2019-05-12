@@ -337,9 +337,9 @@ public class RestClient {
         return foodItems;
     }
     //Test on empty table
-    public static int getMaxConsumptionId()
+    public static int getMaxId(String methodName,String className)
     {
-        String path = "calorietracker.consumption/getMaxConsumptionId";
+        String path = "calorietracker."+className+"/"+methodName;
         URL url = null;
         int maxId=0;
         HttpURLConnection conn = null;
@@ -354,7 +354,7 @@ public class RestClient {
             {
                 String errorResult=errorResponse(conn);
 
-                Log.e("Error Get Max consumption id: ",errorResult);
+                Log.e("Error in "+methodName+": ",errorResult);
                 return maxId;
             }
             maxId = Integer.parseInt(readResponse(conn));
@@ -363,7 +363,7 @@ public class RestClient {
         {
             maxId = 0;
             ex.printStackTrace();
-            Log.i("error in RestClient -> getMaxConsumptionId",ex.getMessage());
+            Log.i("error in RestClient -> "+methodName+"",ex.getMessage());
 
         }
         finally
@@ -404,6 +404,43 @@ public class RestClient {
         {
             ex.printStackTrace();
             Log.i("error in RestClient -> createConsumption",ex.getMessage());
+        }
+        finally {
+            conn.disconnect();
+        }
+
+    }
+    public static void createFoodItem(Food food){
+        URL url;
+        HttpURLConnection conn =null;
+        final String path = "calorietracker.food/";
+
+        try
+        {
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            String json = gson.toJson(food);
+            url=new URL(BASE_URL+path);
+
+            //opening connection
+            conn=(HttpURLConnection)url.openConnection();
+
+            //setting connection parameters
+            setConnectionParameters(conn,"POST",json);
+
+            //sending the post
+            sendPost(conn,json);
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Create Food Post: ",errorResult);
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> createFood",ex.getMessage());
         }
         finally {
             conn.disconnect();

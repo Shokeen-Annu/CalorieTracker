@@ -6,8 +6,8 @@
     android:layout_marginTop="50dp"
     android:orientation="vertical">
 
-
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
    <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -77,10 +77,30 @@
        android:id="@+id/search"
        android:background="@drawable/search_icon"/>
 
+   <Button
+       android:layout_width="30dp"
+       android:layout_height="40dp"
+       android:id="@+id/createFoodItem"
+       android:layout_marginTop="350dp"
+       android:layout_marginLeft="270dp"
+       android:background="@drawable/plus"/>
    <ImageView
        android:layout_width="60dp"
        android:layout_height="60dp"
        android:layout_marginTop="410dp"
        android:id="@+id/searchResult"/>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/description"
+    android:layout_marginTop="410dp"
+    android:layout_marginLeft="80dp"/>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/nutrients"
+       android:layout_marginTop="490dp"/>
+
 
 </RelativeLayout>

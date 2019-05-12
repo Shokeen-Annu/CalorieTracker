@@ -94,7 +94,7 @@ public class SearchGoogleAPI {
         }
         catch (Exception ex)
         {
-            image="No Information found";
+            thumbNail="No Image found";
             ex.printStackTrace();
         }
         return thumbNail;

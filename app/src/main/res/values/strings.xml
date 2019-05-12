@@ -43,7 +43,9 @@
     <string name="quantity">Quantity</string>
     <string name="message">Daily diet added successfully.</string>
     <string name="add">Add</string>
-    <string name="searchFood">Search and add new Food item to the list!</string>
+    <string name="searchFood">Search and add new Food item to the selected category!</string>
     <string name="keyword">Search here...</string>
+    <string name="steps">Your steps</string>
+    <string name="menu_steps">Your Steps</string>
 
 </resources>
