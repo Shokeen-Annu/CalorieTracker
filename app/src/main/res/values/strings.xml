@@ -47,5 +47,6 @@
     <string name="keyword">Search here...</string>
     <string name="steps">Your steps</string>
     <string name="menu_steps">Your Steps</string>
+    <string name="listMessage">Please click on item in list to update your steps!</string>
 
 </resources>

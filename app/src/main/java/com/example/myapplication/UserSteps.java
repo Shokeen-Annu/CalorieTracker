@@ -3,13 +3,14 @@ package com.example.myapplication;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-import java.util.Date;
 @Entity
 public class UserSteps {
 
     @PrimaryKey(autoGenerate = true)
     private Integer id;
+
 
     @ColumnInfo(name = "date_time")
     private String dateTime;

@@ -8,7 +8,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp">
+        android:layout_marginTop="30dp">
 
         <EditText
             android:layout_width="100dp"
@@ -20,31 +20,33 @@
     <Button
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="37dp"
         android:layout_marginLeft="130dp"
         android:id="@+id/addStepsButton"
         android:text="@string/add"/>
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:layout_marginLeft="130dp"
+        android:id="@+id/updateStepsButton"
+        android:visibility="gone"
+        android:text="@string/update"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/listMessage"/>
     <ListView
+        android:id="@+id/list_view_steps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/time"
-            />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/updateStepsEditor"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/updateStepsButton"
-            android:text="@string/update"/>
+        android:layout_marginTop="130dp"
+        android:divider="@color/colorPrimaryDark"
+        android:dividerHeight="3dp"
+        android:headerDividersEnabled="true"
+        android:footerDividersEnabled="true"
+        >
 
     </ListView>
 
