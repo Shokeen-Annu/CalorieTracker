@@ -3,13 +3,18 @@
     android:layout_width="wrap_content"
     android:layout_height="619dp"
     android:layout_marginTop="40dp"
-    android:background="@drawable/fitness">
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/jog"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
-        android:layout_marginLeft="250dp"
+        android:layout_marginLeft="200dp"
         android:textAlignment="textEnd"
         android:text="@string/welcomeMessage"
         android:id="@+id/welcome"/>
@@ -17,7 +22,7 @@
         android:id="@+id/time"
         android:layout_width="170dp"
         android:layout_height="70dp"
-        android:layout_marginLeft="250dp"
+        android:layout_marginLeft="200dp"
         android:layout_marginTop="100dp"
         android:fontFamily="sans-serif-condensed"
         android:textSize="55sp"/>
@@ -25,7 +30,7 @@
         android:layout_width="100dp"
         android:layout_height="30dp"
         android:layout_marginTop="170dp"
-        android:layout_marginLeft="310dp"
+        android:layout_marginLeft="280dp"
         android:id="@+id/date"/>
 
     <TextView
@@ -33,7 +38,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/calorieGoalView"
         android:layout_marginTop="220dp"
-        android:layout_marginLeft="190dp"
+        android:layout_marginLeft="170dp"
         android:textAlignment="textEnd"/>
 
     <android.widget.TextView

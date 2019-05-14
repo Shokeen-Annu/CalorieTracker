@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -63,9 +65,9 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         userId = receivedContent.getInt("userId");
 
         //Display calorie goal
-        ReportAsync showCalorie = new ReportAsync();
-        showCalorie.execute(userId);
-
+        //ReportAsync showCalorie = new ReportAsync();
+        //showCalorie.execute(userId);
+        showCalorieGoal();
         return view;
     }
 
@@ -74,11 +76,26 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
     {
         calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
         try {
-            int calorieGoal = Integer.parseInt(calorieGoalEditor.getText().toString());
+            String calorieGoalString = calorieGoalEditor.getText().toString();
 
-            userReport.setSetcaloriegoalforthatday(calorieGoal);
-            ReportUpdateAsync update = new ReportUpdateAsync();
-            update.execute(userReport);
+            int calorieGoal = Integer.parseInt(calorieGoalString);
+            if(calorieGoal > 0) {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                        "calorietracker", Context.MODE_PRIVATE);
+                SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                spEditor.putString("caloriegoal", calorieGoalString);
+                spEditor.apply();
+            }
+            else
+                throw new Exception();
+         //   userReport.setSetcaloriegoalforthatday(calorieGoal);
+         //   ReportUpdateAsync update = new ReportUpdateAsync();
+         //   update.execute(userReport);
+            showCalorieGoal();
+            calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
+            View update = view.findViewById(R.id.updateGoal);
+            calorieGoalEditor.setVisibility(View.GONE);
+            update.setVisibility(View.INVISIBLE);
         }
         catch (Exception ex)
         {
@@ -100,30 +117,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         protected void onPostExecute(Report report)
         {
 
-            try {
 
-                calorieGoalView = view.findViewById(R.id.calorieGoalView);
-
-                if (report == null) {
-                    calorieGoalView.setText("No calorie data found!");
-                    return;
-                }
-                int calorieGoalVal = report.getSetcaloriegoalforthatday();
-                userReport = report;
-
-                calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
-                calorieGoalUpdateView.setText("Click me to update your goal");
-                if (calorieGoalVal > 0) {
-                    calorieGoalView.setText("Your calorie goal is " + calorieGoalVal);
-
-                } else {
-                    calorieGoalView.setText("Your calorie goal is not set for today");
-                }
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
 
         }
     }
@@ -158,6 +152,30 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             {
                 Toast.makeText(view.getContext(),"Some error occurred!",Toast.LENGTH_LONG).show();
             }
+        }
+    }
+    public void showCalorieGoal()
+    {
+        try {
+
+            calorieGoalView = view.findViewById(R.id.calorieGoalView);
+            calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
+            calorieGoalUpdateView.setText("Click me to update your goal");
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("calorietracker",
+                    Context.MODE_PRIVATE);
+            String calorieGoal = sharedPreferences.getString("caloriegoal", null);
+            if (calorieGoal == null) {
+                calorieGoalView.setText("Your calorie goal is not set for today!");
+                return;
+            }
+            int calorieGoalVal = Integer.parseInt(calorieGoal);
+
+            calorieGoalView.setText("Your calorie goal is " + calorieGoalVal+".");
+
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(view.getContext(),"Calorie goal is not found!",Toast.LENGTH_LONG).show();
         }
     }
 }
