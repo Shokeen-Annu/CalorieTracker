@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +44,7 @@ public class DailyDietFragment extends Fragment implements View.OnClickListener 
     String usdaFoodId = "";
     String keywordVal = "";
     Food food;
+    Food selectedFoodObject;
 
     @Override
     public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState) {
@@ -202,44 +206,17 @@ public class DailyDietFragment extends Fragment implements View.OnClickListener 
 
         @Override
         protected void onPostExecute(Boolean isSuccess) {
-            try {
-                // Test for valid quantity
-                EditText quantity = view.findViewById(R.id.foodQuantity);
-                String quantityString = quantity.getText().toString();
+            Users user = bundle.getParcelable("userObject");
+            selectedFoodObject = new Food();
 
-                int quantityVal = 0;
-                if (!quantityString.isEmpty())
-                    quantityVal = Integer.parseInt(quantityString);
-
-                // Test for valid user entries
-                if (quantityVal <= 0 || selectedFoodItem == -1 || selectedFoodCategory.equals("Select Category")) {
-                    isSuccess = false;
-
+            // Get the selected food item object
+            for (Food item : foodItemsList) {
+                if (item.getId() == selectedFoodItem) {
+                    selectedFoodObject = item;
+                    break;
                 }
-                if (isSuccess) {
-
-                    Users user = bundle.getParcelable("userObject");
-                    Food food = new Food();
-
-                    // Get the selected food item object
-                    for (Food item : foodItemsList) {
-                        if (item.getId() == selectedFoodItem) {
-                            food = item;
-                            break;
-                        }
-                    }
-
-                    // Create consumption object and call post to save it.
-                    Consumption consumption = new Consumption(consumptionId, new Date(), quantityVal, user, food);
-                    new CreateConsumption().execute(consumption);
-                } else {
-                    Toast.makeText(view.getContext(), "Please enter values properly.", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception ex) {
-
-                ex.printStackTrace();
-                Toast.makeText(view.getContext(), "Some error occurred. Please enter values properly.", Toast.LENGTH_LONG).show();
             }
+            new TestFoodItemPresence().execute(user.getUserid(),selectedFoodObject.getId());
         }
     }
 
@@ -373,6 +350,82 @@ public class DailyDietFragment extends Fragment implements View.OnClickListener 
         protected void onPostExecute(Boolean isSuccess) {
             Toast.makeText(view.getContext(), "Food item added successfully!", Toast.LENGTH_LONG).show();
             new FetchFoodItems().execute(selectedFoodCategory);
+        }
+    }
+
+    private class TestFoodItemPresence extends AsyncTask<Integer,Void,Consumption>
+    {
+        @Override
+        protected Consumption doInBackground(Integer... params)
+        {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate date = LocalDate.parse(LocalDate.now().toString(),formatter);
+            return RestClient.isFoodItemAlreadyAddedByUser(params[0],date.toString(),params[1]);
+
+        }
+
+        @Override
+        protected void onPostExecute(Consumption consumption) {
+            Boolean isSuccess = true;
+
+            try {
+                // Test for valid quantity
+                EditText quantity = view.findViewById(R.id.foodQuantity);
+                String quantityString = quantity.getText().toString();
+
+                int quantityVal = 0;
+                if (!quantityString.isEmpty())
+                    quantityVal = Integer.parseInt(quantityString);
+
+                if (consumption == null) {
+
+                    // Test for valid user entries
+                    if (quantityVal <= 0 || selectedFoodItem == -1 || selectedFoodCategory.equals("Select Category")) {
+                        isSuccess = false;
+                    }
+                    if (isSuccess) {
+                        Users user = bundle.getParcelable("userObject");
+
+                        // Create consumption object and call post to save it.
+                        Consumption consumptionNew = new Consumption(consumptionId, new Date(), quantityVal, user, selectedFoodObject);
+
+                        new CreateConsumption().execute(consumptionNew);
+                    } else {
+                        Toast.makeText(view.getContext(), "Please enter values properly.", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                {
+                    int quantityOld = consumption.getQuantity();
+                    quantityOld += quantityVal;
+                    consumption.setQuantity(quantityOld);
+                    new UpdateConsumption().execute(consumption);
+                }
+            }
+                catch(Exception ex){
+
+                    ex.printStackTrace();
+                    Toast.makeText(view.getContext(), "Some error occurred. Please enter values properly.", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+    }
+    private class UpdateConsumption extends AsyncTask<Consumption,Void,Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Consumption... consumption)
+        {
+            return RestClient.updateConsumption(consumption[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSuccess)
+        {
+            if(isSuccess)
+                Toast.makeText(view.getContext(), "Daily diet updated successfully!", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(view.getContext(), "Some error occurred!", Toast.LENGTH_LONG).show();
         }
     }
 }

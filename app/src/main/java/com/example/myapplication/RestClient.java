@@ -447,4 +447,71 @@ public class RestClient {
         }
 
     }
+    public static Consumption isFoodItemAlreadyAddedByUser(Integer userid,String date,Integer foodId) {
+
+        String path = "calorietracker.consumption/isFoodItemAlreadyAddedByUser/"+userid+"/"+date+"/"+foodId;
+        URL url = null;
+        Consumption consumption = null;
+        HttpURLConnection conn=null;
+        try
+        {
+            url =new URL(BASE_URL+path);
+            conn = (HttpURLConnection) url.openConnection();
+            setConnectionParameters(conn,"GET","");
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode==204)
+            {
+                return null;
+            }
+             String result = readResponse(conn);
+            Gson gson= new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            consumption = gson.fromJson(result,Consumption.class);
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> isFoodItemAlreadyAddedByUser",ex.getMessage());
+        }
+        finally {
+
+            conn.disconnect();
+        }
+        return consumption;
+    }
+    public static Boolean updateConsumption(Consumption consumption)
+    {
+        URL url=null;
+        final String path = "calorietracker.consumption/"+consumption.getConsumptionid();
+        HttpURLConnection conn = null;
+        String consumptionJson = "";
+        try
+        {
+            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            consumptionJson = gson.toJson(consumption);
+            url = new URL(BASE_URL+path);
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            setConnectionParameters(conn,"PUT","");
+
+            sendPost(conn,consumptionJson);
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error update consumption Put: ",errorResult);
+                return false;
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> updateConsumption",ex.getMessage());
+        }
+        return true;
+    }
 }
