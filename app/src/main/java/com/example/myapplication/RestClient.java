@@ -515,4 +515,42 @@ public class RestClient {
         }
         return true;
     }
+
+    public static void createReport(Report report)
+    {
+        URL url = null;
+        HttpURLConnection conn =null;
+        final String path = "calorietracker.report/";
+
+        try
+        {
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            String stringReportJson = gson.toJson(report);
+            url=new URL(BASE_URL+path);
+
+            //opening connection
+            conn=(HttpURLConnection)url.openConnection();
+
+            //setting connection parameters
+            setConnectionParameters(conn,"POST",stringReportJson);
+
+            //sending the post
+            sendPost(conn,stringReportJson);
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Create Report Post: ",errorResult);
+            }
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        finally {
+            conn.disconnect();
+        }
+    }
 }

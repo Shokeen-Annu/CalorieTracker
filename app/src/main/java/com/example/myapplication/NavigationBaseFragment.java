@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
     EditText calorieGoalEditor;
     TextView calorieGoalView;
     TextView calorieGoalUpdateView;
-    Report userReport;
+    //Report userReport;
     View view;
     Button updateGoal;
     @Override
@@ -47,7 +48,19 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
                 update.setVisibility(View.VISIBLE);
             }
         });
-        
+
+        // Calling intent service upon button clicked;
+        Button startService = view.findViewById(R.id.startService);
+        startService.setOnClickListener(new AdapterView.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getActivity(),ScheduledIntentService.class);
+                intent.putExtras(receivedContent);
+                getActivity().startService(intent);
+            }
+        });
+
         //Setting up welcome message
 
         receivedContent = getArguments();
@@ -178,4 +191,6 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             Toast.makeText(view.getContext(),"Calorie goal is not found!",Toast.LENGTH_LONG).show();
         }
     }
+
+
 }

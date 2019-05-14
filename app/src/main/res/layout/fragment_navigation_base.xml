@@ -66,5 +66,12 @@
         android:layout_marginTop="270dp"
         android:text="@string/update"
         android:visibility="invisible"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startService"
+        android:text="@string/start"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="250dp"/>
 
 </RelativeLayout>

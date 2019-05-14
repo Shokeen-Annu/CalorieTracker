@@ -182,7 +182,7 @@ public class Users implements Parcelable {
             parcel.writeString(name);
             parcel.writeString(surname);
             parcel.writeString(email);
-            parcel.writeString(dob.toString());
+            parcel.writeSerializable(dob);
             parcel.writeDouble(height.doubleValue());
             parcel.writeDouble(weight.doubleValue());
             parcel.writeString(Character.toString(gender));
