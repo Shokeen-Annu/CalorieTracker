@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +18,11 @@ public class ScheduledIntentService extends IntentService {
     Users user;
     int calorieGoalVal;
     UserStepsDatabase db;
-    List<UserSteps> userStepsList;
     Integer maxReportId;
+    Integer totalCaloriesConsumed;
+    double caloriesBurnedPerStep;
+    double caloriesBurnedAtRest;
+
     public ScheduledIntentService(){
         super("ScheduledIntentService");
     }
@@ -29,6 +32,11 @@ public class ScheduledIntentService extends IntentService {
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("calorietracker", Context.MODE_PRIVATE);
             String calorieGoal = sharedPreferences.getString("caloriegoal", null);
+            if(calorieGoal == null)
+            {
+                Log.i("Android Service","No calorie goal set");
+                calorieGoal = "0";
+            }
             calorieGoalVal = Integer.parseInt(calorieGoal);
             bundle = intent.getExtras();
             user = bundle.getParcelable("userObject");
@@ -76,18 +84,23 @@ public class ScheduledIntentService extends IntentService {
         @Override
         protected Boolean doInBackground(Report... params)
         {
-            RestClient.createReport(params[0]);
-            return true;
+            try {
+                RestClient.createReport(params[0]);
+                return true;
+            }catch (Exception ex)
+            {
+                ex.printStackTrace();
+                return false;
+            }
         }
 
         @Override
         protected void onPostExecute(Boolean isSuccess)
         {
-
             if(isSuccess)
-            {
-                Toast.makeText(getApplicationContext(),"Report added successfully",Toast.LENGTH_LONG).show();
-            }
+                new DeleteStepsData().execute();
+            else
+                Log.i("Android Service","Service failed in doInBackground method of AddReport");
         }
     }
 
@@ -96,20 +109,67 @@ public class ScheduledIntentService extends IntentService {
         @Override
         protected List<UserSteps> doInBackground(Void... params)
         {
-            return db.userStepsDao().getAll();
+            List<UserSteps> userSteps = null;
+            try {
+
+                String today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
+                int userId = user.getUserid();
+                totalCaloriesConsumed = RestClient.getTotalCaloriesConsumedOnDate(userId, today);
+                caloriesBurnedPerStep = RestClient.getCaloriesBurnedPerStep(userId);
+                caloriesBurnedAtRest = RestClient.getTotalCaloriesBurnedAtRest(userId);
+                userSteps = db.userStepsDao().getAll();
+            }
+            catch (Exception ex)
+            {
+                Log.i("Android Service","Service failed in doInBackground method of GetUserSteps");
+            }
+            return userSteps;
         }
 
         @Override
         protected void onPostExecute(List<UserSteps> userSteps)
         {
-            int totalSteps = 0;
-            userStepsList = userSteps;
-            for (UserSteps userStep : userStepsList) {
-                totalSteps += userStep.getSteps();
+            try {
+                int totalSteps = 0;
+                if(userSteps == null)
+                    throw new Exception();
+                for (UserSteps userStep : userSteps) {
+                    totalSteps += userStep.getSteps();
+                }
+                double totalCaloriesBurned = totalSteps * caloriesBurnedPerStep;
+                totalCaloriesBurned += caloriesBurnedAtRest;
+                Report report = new Report(maxReportId, new Date(), totalCaloriesConsumed, (int)totalCaloriesBurned, totalSteps, calorieGoalVal);
+                report.setUserid(user);
+                new AddReport().execute(report);
             }
-            Report report = new Report(maxReportId, new Date(), 0, 0, totalSteps, calorieGoalVal);
-            report.setUserid(user);
-            new AddReport().execute(report);
+            catch (Exception ex)
+            {
+                Log.i("Android Service","Service failed in onPostExecute method of GetUserSteps");
+            }
+        }
+    }
+    private class DeleteStepsData extends AsyncTask<Void,Void,Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            try {
+                db.userStepsDao().deleteAll();
+                return true;
+            }catch(Exception ex)
+            {
+                ex.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSuccess)
+        {
+            if(isSuccess)
+                Log.i("Android Service","Report data added successfully!");
+            else
+                Log.i("Android Service","Error occurred! Report data is not added to the table!");
         }
     }
 }

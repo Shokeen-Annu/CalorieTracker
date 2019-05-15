@@ -15,9 +15,6 @@ public interface UserStepsDao {
     @Query("SELECT * FROM UserSteps")
     List<UserSteps> getAll();
 
-    @Query("SELECT * FROM UserSteps WHERE id = :userStepsId LIMIT 1")
-    UserSteps findById(Integer userStepsId);
-
     @Insert
     long insert(UserSteps userSteps);
 

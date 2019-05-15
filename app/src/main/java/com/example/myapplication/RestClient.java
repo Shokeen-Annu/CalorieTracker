@@ -553,4 +553,113 @@ public class RestClient {
             conn.disconnect();
         }
     }
+    public static int getTotalCaloriesConsumedOnDate(Integer userId,String date)
+    {
+        String path = "calorietracker.consumption/getTotalCaloriesConsumedOnDate/"+userId+"/"+date;
+        URL url;
+        int calories = 0;
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in getTotalCaloriesConsumedOnDate",errorResult);
+                return calories;
+            }
+            calories = Integer.parseInt(readResponse(conn));
+        }
+        catch(Exception ex)
+        {
+            calories = 0;
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getTotalCaloriesConsumedOnDate",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  calories;
+    }
+
+    public static double getCaloriesBurnedPerStep(Integer userId)
+    {
+        String path = "calorietracker.users/getCaloriesBurnedPerStep/"+userId;
+        URL url;
+        double calories = 0.0;
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in getCaloriesBurnedPerStep",errorResult);
+                return calories;
+            }
+            calories = Double.parseDouble(readResponse(conn));
+        }
+        catch(Exception ex)
+        {
+            calories = 0.0;
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getCaloriesBurnedPerStep",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  calories;
+    }
+    public static double getTotalCaloriesBurnedAtRest(Integer userId)
+    {
+        String path = "calorietracker.users/getTotalCaloriesBurnedAtRest/"+userId;
+        URL url;
+        double calories = 0.0;
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in getTotalCaloriesBurnedAtRest",errorResult);
+                return calories;
+            }
+            calories = Double.parseDouble(readResponse(conn));
+        }
+        catch(Exception ex)
+        {
+            calories = 0.0;
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getTotalCaloriesBurnedAtRest",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  calories;
+    }
 }

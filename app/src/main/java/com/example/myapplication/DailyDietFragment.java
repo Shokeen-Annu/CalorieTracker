@@ -358,9 +358,8 @@ public class DailyDietFragment extends Fragment implements View.OnClickListener 
         @Override
         protected Consumption doInBackground(Integer... params)
         {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(LocalDate.now().toString(),formatter);
-            return RestClient.isFoodItemAlreadyAddedByUser(params[0],date.toString(),params[1]);
+            String today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
+            return RestClient.isFoodItemAlreadyAddedByUser(params[0],today,params[1]);
 
         }
 
