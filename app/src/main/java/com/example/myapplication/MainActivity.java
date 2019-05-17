@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'+'hh:mm";
     private String hashInputPswd = "";
     Bundle bundle;
     @Override
@@ -96,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtras(bundle);
 
                 // Calling Android service after login is successful and before calling Home navigation drawer.
+                SharedPreferences sharedPreferences = getSharedPreferences(
+                        "calorietracker", Context.MODE_PRIVATE);
+                Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+                String userJson = gson.toJson(userCredential.getUserid());
+                SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                spEditor.putString("userObject", userJson);
+                spEditor.apply();
                 runScheduledIntentService();
                 startActivity(intent);
 
@@ -113,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Android service","Setting alarm");
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(this,ScheduledIntentService.class);
-        alarmIntent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getService(this,0,alarmIntent,0);
         Calendar calendar=Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

@@ -8,6 +8,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +26,8 @@ public class ScheduledIntentService extends IntentService {
     Integer totalCaloriesConsumed;
     double caloriesBurnedPerStep;
     double caloriesBurnedAtRest;
+    int userId;
+    static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'+'hh:mm";
 
     public ScheduledIntentService(){
         super("ScheduledIntentService");
@@ -32,14 +38,15 @@ public class ScheduledIntentService extends IntentService {
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("calorietracker", Context.MODE_PRIVATE);
             String calorieGoal = sharedPreferences.getString("caloriegoal", null);
-            if(calorieGoal == null)
+            String userJson = sharedPreferences.getString("userObject", null);
+            Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            user = gson.fromJson(userJson,Users.class);
+            if(calorieGoal == null )
             {
                 Log.i("Android Service","No calorie goal set");
                 calorieGoal = "0";
             }
             calorieGoalVal = Integer.parseInt(calorieGoal);
-            bundle = intent.getExtras();
-            user = bundle.getParcelable("userObject");
             db = Room.databaseBuilder(getApplicationContext(), UserStepsDatabase.class, "UserStepsDatabase").fallbackToDestructiveMigration().build();
 
             new GetMaxReportId().execute();
@@ -54,7 +61,9 @@ public class ScheduledIntentService extends IntentService {
     @Override
     public int onStartCommand(Intent intent,int flags,int startId)
     {
-        return super.onStartCommand(intent,flags,startId);
+        int result = super.onStartCommand(intent,flags,startId);
+        return result;
+
     }
 
     private class GetMaxReportId extends AsyncTask<Void,Void,Integer>
@@ -113,7 +122,7 @@ public class ScheduledIntentService extends IntentService {
             try {
 
                 String today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
-                int userId = user.getUserid();
+                userId = user.getUserid();
                 totalCaloriesConsumed = RestClient.getTotalCaloriesConsumedOnDate(userId, today);
                 caloriesBurnedPerStep = RestClient.getCaloriesBurnedPerStep(userId);
                 caloriesBurnedAtRest = RestClient.getTotalCaloriesBurnedAtRest(userId);
@@ -131,11 +140,12 @@ public class ScheduledIntentService extends IntentService {
         {
             try {
                 int totalSteps = 0;
-                if(userSteps == null)
-                    throw new Exception();
-                for (UserSteps userStep : userSteps) {
-                    totalSteps += userStep.getSteps();
+                if(userSteps != null) {
+                    for (UserSteps userStep : userSteps) {
+                        totalSteps += userStep.getSteps();
+                    }
                 }
+
                 double totalCaloriesBurned = totalSteps * caloriesBurnedPerStep;
                 totalCaloriesBurned += caloriesBurnedAtRest;
                 Report report = new Report(maxReportId, new Date(), totalCaloriesConsumed, (int)totalCaloriesBurned, totalSteps, calorieGoalVal);

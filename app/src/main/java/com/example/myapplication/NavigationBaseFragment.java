@@ -56,7 +56,6 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             public void onClick(View v)
             {
                 Intent intent = new Intent(getActivity(),ScheduledIntentService.class);
-                intent.putExtras(receivedContent);
                 getActivity().startService(intent);
             }
         });
