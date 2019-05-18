@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
 public class NavigationBaseFragment extends Fragment  implements View.OnClickListener {
 
@@ -26,13 +32,17 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
     EditText calorieGoalEditor;
     TextView calorieGoalView;
     TextView calorieGoalUpdateView;
-    //Report userReport;
     View view;
     Button updateGoal;
+    UserStepsDatabase db;
+    Integer totalCaloriesConsumed;
+    double caloriesBurnedPerStep;
+    double caloriesBurnedAtRest;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         view = inflater.inflate(R.layout.fragment_navigation_base,container,false);
+        db = Room.databaseBuilder(view.getContext(), UserStepsDatabase.class, "UserStepsDatabase").fallbackToDestructiveMigration().build();
 
         // Setting on click of update button
         updateGoal = view.findViewById(R.id.updateGoal);
@@ -80,6 +90,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         //ReportAsync showCalorie = new ReportAsync();
         //showCalorie.execute(userId);
         showCalorieGoal();
+        new ShowReportData().execute();
         return view;
     }
 
@@ -115,64 +126,64 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         }
 
     }
-    private class ReportAsync extends AsyncTask<Integer,Void,Report>
-    {
+//    private class ReportAsync extends AsyncTask<Integer,Void,Report>
+//    {
+//
+//        @Override
+//        protected Report doInBackground(Integer... params)
+//        {
+//            LocalDate todayDate = LocalDate.now();
+//            return RestClient.findReport(params[0],todayDate.toString());
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Report report)
+//        {
+//
+//
+//
+//        }
+//    }
 
-        @Override
-        protected Report doInBackground(Integer... params)
-        {
-            LocalDate todayDate = LocalDate.now();
-            return RestClient.findReport(params[0],todayDate.toString());
-        }
-
-        @Override
-        protected void onPostExecute(Report report)
-        {
-
-
-
-        }
-    }
-
-    private class ReportUpdateAsync extends AsyncTask<Report,Void,Boolean>
-    {
-        @Override
-        protected Boolean doInBackground(Report... params)
-        {
-
-            return RestClient.updateReport(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result)
-        {
-            try {
-                if (result) {
-                    calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
-                    calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
-                    calorieGoalView = view.findViewById(R.id.calorieGoalView);
-
-                    int calorieGoalVal = Integer.parseInt(calorieGoalEditor.getText().toString());
-                    calorieGoalView.setText("Your calorie goal is " + calorieGoalVal);
-
-                    View update = view.findViewById(R.id.updateGoal);
-                    calorieGoalEditor.setVisibility(View.GONE);
-                    update.setVisibility(View.INVISIBLE);
-                }
-            }
-            catch(Exception ex)
-            {
-                Toast.makeText(view.getContext(),"Some error occurred!",Toast.LENGTH_LONG).show();
-            }
-        }
-    }
+//    private class ReportUpdateAsync extends AsyncTask<Report,Void,Boolean>
+//    {
+//        @Override
+//        protected Boolean doInBackground(Report... params)
+//        {
+//
+//            return RestClient.updateReport(params[0]);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result)
+//        {
+//            try {
+//                if (result) {
+//                    calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
+//                    calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
+//                    calorieGoalView = view.findViewById(R.id.calorieGoalView);
+//
+//                    int calorieGoalVal = Integer.parseInt(calorieGoalEditor.getText().toString());
+//                    calorieGoalView.setText("Your calorie goal is " + calorieGoalVal);
+//
+//                    View update = view.findViewById(R.id.updateGoal);
+//                    calorieGoalEditor.setVisibility(View.GONE);
+//                    update.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//            catch(Exception ex)
+//            {
+//                Toast.makeText(view.getContext(),"Some error occurred!",Toast.LENGTH_LONG).show();
+//            }
+//        }
+//    }
     public void showCalorieGoal()
     {
         try {
 
             calorieGoalView = view.findViewById(R.id.calorieGoalView);
             calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
-            calorieGoalUpdateView.setText("Click me to update your goal");
+            calorieGoalUpdateView.setText("Click me to update your goal!");
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("calorietracker",
                     Context.MODE_PRIVATE);
             String calorieGoal = sharedPreferences.getString("caloriegoal", null);
@@ -188,6 +199,54 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         catch(Exception ex)
         {
             Toast.makeText(view.getContext(),"Calorie goal is not found!",Toast.LENGTH_LONG).show();
+        }
+    }
+    private class ShowReportData extends AsyncTask<Void,Void, List<UserSteps>>
+    {
+        @Override
+        protected List<UserSteps> doInBackground(Void... params)
+        {
+            List<UserSteps> userSteps = null;
+            try {
+
+                String today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
+                totalCaloriesConsumed = RestClient.getTotalCaloriesConsumedOnDate(userId, today);
+                caloriesBurnedPerStep = RestClient.getCaloriesBurnedPerStep(userId);
+                caloriesBurnedAtRest = RestClient.getTotalCaloriesBurnedAtRest(userId);
+                userSteps = db.userStepsDao().getAll();
+            }
+            catch (Exception ex)
+            {
+                Toast.makeText(view.getContext(),"Report could not be loaded due to some error!",Toast.LENGTH_LONG).show();
+            }
+            return userSteps;
+        }
+
+        @Override
+        protected void onPostExecute(List<UserSteps> userSteps)
+        {
+            try {
+                int totalSteps = 0;
+                if(userSteps != null) {
+                    for (UserSteps userStep : userSteps) {
+                        totalSteps += userStep.getSteps();
+                    }
+                }
+
+                double totalCaloriesBurned = totalSteps * caloriesBurnedPerStep;
+                totalCaloriesBurned += caloriesBurnedAtRest;
+
+                TextView stepsText = view.findViewById(R.id.totalSteps);
+                TextView calConsumed = view.findViewById(R.id.caloriesConsumed);
+                TextView calBurned = view.findViewById(R.id.caloriesBurned);
+                stepsText.setText("Total Steps : "+totalSteps);
+                calConsumed.setText("Calories Consumed : "+totalCaloriesConsumed);
+                calBurned.setText("Calories Burned : "+(int)totalCaloriesBurned);
+            }
+            catch (Exception ex)
+            {
+                Toast.makeText(view.getContext(),"Report could not be loaded due to some error!",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
