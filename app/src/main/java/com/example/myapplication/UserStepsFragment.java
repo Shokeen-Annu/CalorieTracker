@@ -35,13 +35,14 @@ public class UserStepsFragment extends Fragment{
     String[] colHead = new String[]{"ID","DATE AND TIME","STEPS"};
     int[] dataCell = new int[]{R.id.stepid,R.id.time,R.id.steps};
     HashMap<String,String> selectedRow;
+    Integer userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         view = inflater.inflate(R.layout.fragment_user_steps,container,false);
         bundle = getArguments();
-
+        userId = bundle.getInt("userId");
         db = Room.databaseBuilder(view.getContext(),UserStepsDatabase.class,"UserStepsDatabase").fallbackToDestructiveMigration().build();
         // Adding user steps to SQL Lite table
         Button add = view.findViewById(R.id.addStepsButton);
@@ -148,7 +149,7 @@ public class UserStepsFragment extends Fragment{
         @Override
         protected List<UserSteps> doInBackground(Void... params)
         {
-            return db.userStepsDao().getAll();
+            return db.userStepsDao().getAll(userId);
         }
 
         @Override

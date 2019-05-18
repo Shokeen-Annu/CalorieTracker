@@ -12,8 +12,8 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface UserStepsDao {
 
-    @Query("SELECT * FROM UserSteps")
-    List<UserSteps> getAll();
+    @Query("SELECT * FROM UserSteps WHERE userid=:userId")
+    List<UserSteps> getAll(Integer userId);
 
     @Insert
     long insert(UserSteps userSteps);
@@ -21,6 +21,6 @@ public interface UserStepsDao {
     @Update(onConflict = REPLACE)
     public void updateUserSteps(UserSteps... userSteps);
 
-    @Query("DELETE FROM UserSteps")
-    void deleteAll();
+    @Query("DELETE FROM UserSteps WHERE userid=:userId")
+    void deleteAll(Integer userId);
 }

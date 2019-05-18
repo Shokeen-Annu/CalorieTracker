@@ -38,12 +38,13 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
     Integer totalCaloriesConsumed;
     double caloriesBurnedPerStep;
     double caloriesBurnedAtRest;
+    String today;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         view = inflater.inflate(R.layout.fragment_navigation_base,container,false);
         db = Room.databaseBuilder(view.getContext(), UserStepsDatabase.class, "UserStepsDatabase").fallbackToDestructiveMigration().build();
-
+        today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
         // Setting on click of update button
         updateGoal = view.findViewById(R.id.updateGoal);
         updateGoal.setOnClickListener(this);
@@ -106,7 +107,8 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
                         "calorietracker", Context.MODE_PRIVATE);
                 SharedPreferences.Editor spEditor = sharedPreferences.edit();
-                spEditor.putString("caloriegoal", calorieGoalString);
+
+                spEditor.putString("caloriegoal"+userId+today, calorieGoalString);
                 spEditor.apply();
             }
             else
@@ -186,7 +188,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             calorieGoalUpdateView.setText("Click me to update your goal!");
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("calorietracker",
                     Context.MODE_PRIVATE);
-            String calorieGoal = sharedPreferences.getString("caloriegoal", null);
+            String calorieGoal = sharedPreferences.getString("caloriegoal"+userId+today, null);
             if (calorieGoal == null) {
                 calorieGoalView.setText("Your calorie goal is not set for today!");
                 return;
@@ -213,7 +215,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
                 totalCaloriesConsumed = RestClient.getTotalCaloriesConsumedOnDate(userId, today);
                 caloriesBurnedPerStep = RestClient.getCaloriesBurnedPerStep(userId);
                 caloriesBurnedAtRest = RestClient.getTotalCaloriesBurnedAtRest(userId);
-                userSteps = db.userStepsDao().getAll();
+                userSteps = db.userStepsDao().getAll(userId);
             }
             catch (Exception ex)
             {

@@ -100,7 +100,11 @@ public class Home extends AppCompatActivity
             fragment = new UserStepsFragment();
             fragment.setArguments(bundle);
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_map) {
+            Intent intent = new Intent(this,MapsActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            return true;
 
         } else if (id == R.id.nav_share) {
 

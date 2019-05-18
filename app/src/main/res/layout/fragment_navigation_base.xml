@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="170dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="200dp"
         android:textAlignment="textEnd"
         android:textSize="16sp"
         android:textStyle="bold" />

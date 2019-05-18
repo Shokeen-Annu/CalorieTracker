@@ -28,6 +28,7 @@ public class ScheduledIntentService extends IntentService {
     double caloriesBurnedAtRest;
     int userId;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'+'hh:mm";
+    String today;
 
     public ScheduledIntentService(){
         super("ScheduledIntentService");
@@ -37,10 +38,12 @@ public class ScheduledIntentService extends IntentService {
     {
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("calorietracker", Context.MODE_PRIVATE);
-            String calorieGoal = sharedPreferences.getString("caloriegoal", null);
             String userJson = sharedPreferences.getString("userObject", null);
             Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
             user = gson.fromJson(userJson,Users.class);
+            today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
+            userId = user.getUserid();
+            String calorieGoal = sharedPreferences.getString("caloriegoal"+userId+today, null);
             if(calorieGoal == null )
             {
                 Log.i("Android Service","No calorie goal set");
@@ -120,13 +123,10 @@ public class ScheduledIntentService extends IntentService {
         {
             List<UserSteps> userSteps = null;
             try {
-
-                String today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
-                userId = user.getUserid();
                 totalCaloriesConsumed = RestClient.getTotalCaloriesConsumedOnDate(userId, today);
                 caloriesBurnedPerStep = RestClient.getCaloriesBurnedPerStep(userId);
                 caloriesBurnedAtRest = RestClient.getTotalCaloriesBurnedAtRest(userId);
-                userSteps = db.userStepsDao().getAll();
+                userSteps = db.userStepsDao().getAll(userId);
             }
             catch (Exception ex)
             {
@@ -164,7 +164,7 @@ public class ScheduledIntentService extends IntentService {
         protected Boolean doInBackground(Void... params)
         {
             try {
-                db.userStepsDao().deleteAll();
+                db.userStepsDao().deleteAll(userId);
                 return true;
             }catch(Exception ex)
             {
