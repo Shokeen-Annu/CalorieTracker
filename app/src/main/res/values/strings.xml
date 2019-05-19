@@ -46,7 +46,7 @@
     <string name="searchFood">Search and add new Food item to the selected category!</string>
     <string name="keyword">Search here...</string>
     <string name="steps">Your steps</string>
-    <string name="menu_steps">Your Steps</string>
+    <string name="menu_steps">My Steps</string>
     <string name="listMessage">Please click on item in list to update your steps!</string>
     <string name="start">Start Service</string>
     <string name="menu_map">Map</string>

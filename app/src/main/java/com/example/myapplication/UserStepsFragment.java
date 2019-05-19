@@ -40,7 +40,7 @@ public class UserStepsFragment extends Fragment{
         view = inflater.inflate(R.layout.fragment_user_steps,container,false);
         bundle = getArguments();
         userId = bundle.getInt("userId");
-        getActivity().setTitle("Your Steps");
+        getActivity().setTitle("My Steps");
         db = UserStepsDatabase.getDatabase(view.getContext());
         // Adding user steps to SQL Lite table
         Button add = view.findViewById(R.id.addStepsButton);

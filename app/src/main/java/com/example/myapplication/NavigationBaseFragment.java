@@ -42,6 +42,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
         // Setting on click of update button
         updateGoal = view.findViewById(R.id.updateGoal);
+        getActivity().setTitle("Calorie Tracker");
         updateGoal.setOnClickListener(this);
         //On click for calorieGoalUpdateView
         calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
