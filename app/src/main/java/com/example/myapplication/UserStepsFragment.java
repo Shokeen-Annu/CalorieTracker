@@ -14,9 +14,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,7 +40,8 @@ public class UserStepsFragment extends Fragment{
         view = inflater.inflate(R.layout.fragment_user_steps,container,false);
         bundle = getArguments();
         userId = bundle.getInt("userId");
-        db = Room.databaseBuilder(view.getContext(),UserStepsDatabase.class,"UserStepsDatabase").fallbackToDestructiveMigration().build();
+        getActivity().setTitle("Your Steps");
+        db = UserStepsDatabase.getDatabase(view.getContext());
         // Adding user steps to SQL Lite table
         Button add = view.findViewById(R.id.addStepsButton);
         add.setOnClickListener(new View.OnClickListener(){

@@ -8,11 +8,13 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
    <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginTop="10dp"
-       android:text="@string/foodCategory"/>
+       android:text="@string/foodCategory"
+       android:textStyle="bold" />
 
    <Spinner
        android:layout_width="wrap_content"
@@ -26,7 +28,8 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginTop="80dp"
-       android:text="@string/foodItems"/>
+       android:text="@string/foodItems"
+       android:textStyle="bold" />
    <Spinner
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
@@ -51,13 +54,15 @@
        android:layout_height="match_parent"
        android:layout_marginTop="220dp"
        android:id="@+id/addFood"
-       android:text="@string/add"/>
+       android:text="@string/add"
+       android:textStyle="bold" />
 
    <TextView
        android:layout_width="wrap_content"
        android:layout_height="match_parent"
        android:layout_marginTop="280dp"
-       android:text="@string/searchFood"/>
+       android:text="@string/searchFood"
+       android:textStyle="bold" />
 
    <android.support.design.widget.TextInputLayout
        android:layout_width="wrap_content"
@@ -94,13 +99,15 @@
     android:layout_height="wrap_content"
     android:id="@+id/description"
     android:layout_marginTop="410dp"
-    android:layout_marginLeft="80dp"/>
+    android:layout_marginLeft="80dp"
+    android:textStyle="bold" />
 
    <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:id="@+id/nutrients"
-       android:layout_marginTop="490dp"/>
+       android:layout_marginTop="490dp"
+       android:textStyle="bold" />
 
 
 </RelativeLayout>

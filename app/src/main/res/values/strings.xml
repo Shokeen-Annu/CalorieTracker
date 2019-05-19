@@ -51,14 +51,14 @@
     <string name="start">Start Service</string>
     <string name="menu_map">Map</string>
     <string name="title_activity_maps">Map</string>
-    <string name="menu_report">Historical Report</string>
+    <string name="menu_report">Report</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="date">Select Date</string>
     <string name="fromDate">From Date</string>
     <string name="toDate">To Date</string>
     <string name="pie">Pie Chart</string>
     <string name="bar">Bar Chart</string>
+    <string name="confirm">Re-type Password</string>
 
 </resources>

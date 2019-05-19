@@ -1,13 +1,11 @@
 package com.example.myapplication;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 public class NavigationBaseFragment extends Fragment  implements View.OnClickListener {
@@ -43,7 +38,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         view = inflater.inflate(R.layout.fragment_navigation_base,container,false);
-        db = Room.databaseBuilder(view.getContext(), UserStepsDatabase.class, "UserStepsDatabase").fallbackToDestructiveMigration().build();
+        db = UserStepsDatabase.getDatabase(view.getContext());
         today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
         // Setting on click of update button
         updateGoal = view.findViewById(R.id.updateGoal);
@@ -88,9 +83,6 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         date.setText(today.getDayOfMonth()+" "+today.getMonth()+", "+today.getYear());
         userId = receivedContent.getInt("userId");
 
-        //Display calorie goal
-        //ReportAsync showCalorie = new ReportAsync();
-        //showCalorie.execute(userId);
         showCalorieGoal();
         new ShowReportData().execute();
         return view;
@@ -114,9 +106,6 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             }
             else
                 throw new Exception();
-         //   userReport.setSetcaloriegoalforthatday(calorieGoal);
-         //   ReportUpdateAsync update = new ReportUpdateAsync();
-         //   update.execute(userReport);
             showCalorieGoal();
             calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
             View update = view.findViewById(R.id.updateGoal);
@@ -129,57 +118,6 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
         }
 
     }
-//    private class ReportAsync extends AsyncTask<Integer,Void,Report>
-//    {
-//
-//        @Override
-//        protected Report doInBackground(Integer... params)
-//        {
-//            LocalDate todayDate = LocalDate.now();
-//            return RestClient.findReport(params[0],todayDate.toString());
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Report report)
-//        {
-//
-//
-//
-//        }
-//    }
-
-//    private class ReportUpdateAsync extends AsyncTask<Report,Void,Boolean>
-//    {
-//        @Override
-//        protected Boolean doInBackground(Report... params)
-//        {
-//
-//            return RestClient.updateReport(params[0]);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean result)
-//        {
-//            try {
-//                if (result) {
-//                    calorieGoalEditor = view.findViewById(R.id.calorieGoalEditor);
-//                    calorieGoalUpdateView = view.findViewById(R.id.calorieGoalUpdateView);
-//                    calorieGoalView = view.findViewById(R.id.calorieGoalView);
-//
-//                    int calorieGoalVal = Integer.parseInt(calorieGoalEditor.getText().toString());
-//                    calorieGoalView.setText("Your calorie goal is " + calorieGoalVal);
-//
-//                    View update = view.findViewById(R.id.updateGoal);
-//                    calorieGoalEditor.setVisibility(View.GONE);
-//                    update.setVisibility(View.INVISIBLE);
-//                }
-//            }
-//            catch(Exception ex)
-//            {
-//                Toast.makeText(view.getContext(),"Some error occurred!",Toast.LENGTH_LONG).show();
-//            }
-//        }
-//    }
     public void showCalorieGoal()
     {
         try {

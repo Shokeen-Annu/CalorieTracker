@@ -23,7 +23,8 @@
         android:layout_marginTop="60dp"
         android:id="@+id/dateTv"
         android:text="Select Date"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/date"
@@ -40,7 +41,8 @@
         android:layout_marginTop="60dp"
         android:id="@+id/fromDateTv"
         android:text="From Date"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textStyle="bold" />
 
         <EditText
             android:id="@+id/fromDate"
@@ -58,7 +60,8 @@
         android:layout_marginLeft="120dp"
         android:id="@+id/toDateTv"
         android:text="To Date"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textStyle="bold" />
 
         <EditText
             android:id="@+id/toDate"

@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

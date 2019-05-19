@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.app.IntentService;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,7 +50,7 @@ public class ScheduledIntentService extends IntentService {
                 calorieGoal = "0";
             }
             calorieGoalVal = Integer.parseInt(calorieGoal);
-            db = Room.databaseBuilder(getApplicationContext(), UserStepsDatabase.class, "UserStepsDatabase").fallbackToDestructiveMigration().build();
+            db = UserStepsDatabase.getDatabase(getApplicationContext());
 
             new GetMaxReportId().execute();
         }

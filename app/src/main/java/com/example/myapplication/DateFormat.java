@@ -22,4 +22,11 @@ public class DateFormat {
         LocalDate localDate = LocalDate.parse(date,formatter);
         return localDate;
     }
+
+    public static Date formatDateInShortFormat(String date) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setLenient(false);
+        Date formattedDate = format.parse(date.trim());
+        return formattedDate;
+    }
 }

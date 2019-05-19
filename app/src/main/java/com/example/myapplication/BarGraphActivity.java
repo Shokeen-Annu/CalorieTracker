@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,7 +8,6 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -28,6 +26,7 @@ public class BarGraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar_graph);
+        setTitle("Bar Chart");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String barData = bundle.getString("barData");
@@ -63,7 +62,7 @@ public class BarGraphActivity extends AppCompatActivity {
                 data.setValueTextSize(14);
                 bSet.setFormSize(14);
                 Description description = new Description();
-                description.setText("All values in kCal");
+                description.setText("All values in cal");
                 description.setTextSize(14f);
                 bar.setDescription(description);
                 bar.setData(data);

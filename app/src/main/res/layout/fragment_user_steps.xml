@@ -23,7 +23,8 @@
         android:layout_marginTop="37dp"
         android:layout_marginLeft="130dp"
         android:id="@+id/addStepsButton"
-        android:text="@string/add"/>
+        android:text="@string/add"
+        android:textStyle="bold" />
     <Button
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -31,12 +32,14 @@
         android:layout_marginLeft="130dp"
         android:id="@+id/updateStepsButton"
         android:visibility="gone"
-        android:text="@string/update"/>
+        android:text="@string/update"
+        android:textStyle="bold" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="@string/listMessage"/>
+        android:text="@string/listMessage"
+        android:textStyle="bold" />
     <ListView
         android:id="@+id/list_view_steps"
         android:layout_width="match_parent"

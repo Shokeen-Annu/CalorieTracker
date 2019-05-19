@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,6 +52,7 @@ public class DailyDietFragment extends Fragment implements View.OnClickListener 
         Button addFoodItem = view.findViewById(R.id.addFood);
         addFoodItem.setOnClickListener(this);
 
+        getActivity().setTitle("Daily Diet");
         // Search button onClick method
         Button searchFoodItem = view.findViewById(R.id.search);
         searchFoodItem.setOnClickListener(new View.OnClickListener() {

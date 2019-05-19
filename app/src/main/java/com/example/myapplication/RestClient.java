@@ -1,7 +1,5 @@
 package com.example.myapplication;
-import android.accessibilityservice.FingerprintGestureController;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,8 +9,6 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -78,6 +74,13 @@ public class RestClient {
 
             //sending the post
             sendPost(conn,stringCredentialJson);
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=204)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Create Credential Post: ",errorResult);
+            }
 
         }
         catch(Exception ex)
@@ -103,6 +106,14 @@ public class RestClient {
 
             setConnectionParameters(conn,"GET","");
 
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error Find Credential: ",errorResult);
+                return null;
+            }
             result = readResponse(conn);
 
             Gson gson=new GsonBuilder().setDateFormat(DATE_FORMAT).create();
@@ -113,91 +124,93 @@ public class RestClient {
         {
             ex.printStackTrace();
             Log.i("error in RestClient -> findCredential",ex.getMessage());
+            return null;
         }
         finally {
             conn.disconnect();
+            return userCredential;
         }
 
-        return userCredential;
+
     }
 
 
-    public static Report findReport(Integer userid, String date)
-    {
-        URL url=null;
-        final String path = "calorietracker.report/findByUseridAndDate/"+userid+"/"+date;
-        HttpURLConnection conn = null;
-        String result = "";
-        Report report = null;
-        try
-        {
-           url = new URL(BASE_URL+path);
+//    public static Report findReport(Integer userid, String date)
+//    {
+//        URL url=null;
+//        final String path = "calorietracker.report/findByUseridAndDate/"+userid+"/"+date;
+//        HttpURLConnection conn = null;
+//        String result = "";
+//        Report report = null;
+//        try
+//        {
+//           url = new URL(BASE_URL+path);
+//
+//           conn = (HttpURLConnection) url.openConnection();
+//
+//           setConnectionParameters(conn,"GET","");
+//
+//            int responseCode = conn.getResponseCode();
+//            if(responseCode!=200)
+//            {
+//                String errorResult=errorResponse(conn);
+//
+//                Log.e("Error Find Report: ",errorResult);
+//                return null;
+//            }
+//           result = readResponse(conn);
+//
+//           Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+//           report = gson.fromJson(result,Report.class);
+//        }
+//        catch(IOException ex)
+//        {
+//            ex.printStackTrace();
+//            Log.i("error in RestClient -> findReport",ex.getMessage());
+//            report = null;
+//        }
+//        catch(Exception ex)
+//        {
+//            ex.printStackTrace();
+//            Log.i("error in RestClient -> findReport",ex.getMessage());
+//        }
+//        return report;
+//    }
 
-           conn = (HttpURLConnection) url.openConnection();
-
-           setConnectionParameters(conn,"GET","");
-
-            int responseCode = conn.getResponseCode();
-            if(responseCode!=200)
-            {
-                String errorResult=errorResponse(conn);
-
-                Log.e("Error Find Report: ",errorResult);
-                return null;
-            }
-           result = readResponse(conn);
-
-           Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-           report = gson.fromJson(result,Report.class);
-        }
-        catch(IOException ex)
-        {
-            ex.printStackTrace();
-            Log.i("error in RestClient -> findReport",ex.getMessage());
-            report = null;
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-            Log.i("error in RestClient -> findReport",ex.getMessage());
-        }
-        return report;
-    }
-
-    public static Boolean updateReport(Report report)
-    {
-        URL url=null;
-        final String path = "calorietracker.report/"+report.getReportid();
-        HttpURLConnection conn = null;
-        String reportJson = "";
-        try
-        {
-            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
-            reportJson = gson.toJson(report);
-            url = new URL(BASE_URL+path);
-
-            conn = (HttpURLConnection) url.openConnection();
-
-            setConnectionParameters(conn,"PUT","");
-
-            sendPost(conn,reportJson);
-
-            int responseCode = conn.getResponseCode();
-            if(responseCode!=204)
-            {
-                String errorResult=errorResponse(conn);
-
-                Log.e("Error Create User Post: ",errorResult);
-                return false;
-            }
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-            Log.i("error in RestClient -> findReport",ex.getMessage());
-        }
-       return true;
-    }
+//    public static Boolean updateReport(Report report)
+//    {
+//        URL url=null;
+//        final String path = "calorietracker.report/"+report.getReportid();
+//        HttpURLConnection conn = null;
+//        String reportJson = "";
+//        try
+//        {
+//            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+//            reportJson = gson.toJson(report);
+//            url = new URL(BASE_URL+path);
+//
+//            conn = (HttpURLConnection) url.openConnection();
+//
+//            setConnectionParameters(conn,"PUT","");
+//
+//            sendPost(conn,reportJson);
+//
+//            int responseCode = conn.getResponseCode();
+//            if(responseCode!=204)
+//            {
+//                String errorResult=errorResponse(conn);
+//
+//                Log.e("Error Create User Post: ",errorResult);
+//                return false;
+//            }
+//        }
+//        catch(Exception ex)
+//        {
+//            ex.printStackTrace();
+//            Log.i("error in RestClient -> findReport",ex.getMessage());
+//        }
+//       return true;
+//    }
 
     public static void setConnectionParameters(HttpURLConnection conn,String methodType,String data) throws java.net.ProtocolException
     {
@@ -731,4 +744,46 @@ public class RestClient {
 
         return  json;
     }
+
+    public static Boolean isEmailUnique(String param) {
+        String path = "calorietracker.users/findByEmail/"+param;
+        URL url;
+        Boolean result=true;
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in isEmailUnique",errorResult);
+                return result;
+            }
+            String json = readResponse(conn);
+            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            Users user = gson.fromJson(json,Users.class);
+            if(user != null)
+                result = false;
+
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> isEmailUnique",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  result;
+    }
+
+
 }

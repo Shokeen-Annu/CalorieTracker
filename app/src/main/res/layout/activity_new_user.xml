@@ -79,10 +79,12 @@
                 android:layout_marginRight="0dp"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/gender"/>
+        android:text="@string/gender"
+        android:textColor="#020202" />
 
 <RadioGroup
     android:id="@+id/genderEditor"
@@ -134,7 +136,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/activityLevel"/>
+        android:text="@string/activityLevel"
+        android:textColor="#0E0D0D" />
 
     <Spinner
         android:layout_width="match_parent"
@@ -175,24 +178,26 @@
         android:hint="@string/password"
         />
     </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/passwordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/confirm"
+            />
+    </android.support.design.widget.TextInputLayout>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/createNewUser"
         android:text="@string/signUp"
-        android:onClick="createNewUser"/>
+        android:onClick="createNewUser"
+        android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/message"
-        />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/goBack"
-        android:onClick="goBack"
-        android:text="Go Back"/>
 </LinearLayout>
 </ScrollView>

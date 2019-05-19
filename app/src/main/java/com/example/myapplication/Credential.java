@@ -19,11 +19,10 @@ public class Credential {
         this.username = username;
     }
 
-    public Credential(String username, String passwordhash, Date signupdate,Users user) {
+    public Credential(String username, String passwordhash, Date signupdate) {
         this.username = username;
         this.passwordhash = passwordhash;
         this.signupdate = signupdate;
-        this.userid = user;
     }
 
     public String getUsername() {
