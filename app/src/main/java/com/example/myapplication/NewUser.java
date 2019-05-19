@@ -45,7 +45,7 @@ public class NewUser extends AppCompatActivity {
                 datePicker = new DatePickerDialog(NewUser.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        LocalDate dateOfBirth = Year.of(year).atMonth(month).atDay(dayOfMonth);
+                        LocalDate dateOfBirth = Year.of(year).atMonth(month+1).atDay(dayOfMonth);
                         dobEditor.setText(dateOfBirth.toString());
                     }
                 },year,month,day);

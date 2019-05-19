@@ -662,4 +662,73 @@ public class RestClient {
 
         return  calories;
     }
+
+    public static String getReportOnDuration(Integer userId,String fromDate,String toDate)
+    {
+        String path = "calorietracker.report/createReportForDurationAndUser/"+userId+"/"+fromDate+"/"+toDate;
+        URL url;
+        String json="";
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in getReportOnDuration",errorResult);
+                return json;
+            }
+            json = readResponse(conn);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getReportOnDuration",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  json;
+    }
+    public static String getReportOnGivenDate(Integer userId,String date)
+    {
+        String path = "calorietracker.report/createReportOnCaloriesOnGivenDateAndUser/"+userId+"/"+date;
+        URL url;
+        String json="";
+        HttpURLConnection conn = null;
+        try
+        {
+            url = new URL(BASE_URL+path);
+            conn=(HttpURLConnection)url.openConnection();
+            setConnectionParameters(conn,"GET","");
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200)
+            {
+                String errorResult=errorResponse(conn);
+
+                Log.e("Error in getReportOnGivenDate",errorResult);
+                return json;
+            }
+            json = readResponse(conn);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Log.i("error in RestClient -> getReportOnGivenDate",ex.getMessage());
+
+        }
+        finally
+        {
+            conn.disconnect();
+        }
+
+        return  json;
+    }
 }

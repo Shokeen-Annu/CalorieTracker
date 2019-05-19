@@ -44,6 +44,7 @@ public class ScheduledIntentService extends IntentService {
             today = DateFormat.formatStringToLocalDate(LocalDate.now().toString()).toString();
             userId = user.getUserid();
             String calorieGoal = sharedPreferences.getString("caloriegoal"+userId+today, null);
+
             if(calorieGoal == null )
             {
                 Log.i("Android Service","No calorie goal set");

@@ -106,10 +106,10 @@ public class Home extends AppCompatActivity
             startActivity(intent);
             return true;
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_report) {
 
-        } else if (id == R.id.nav_send) {
-
+            fragment = new ReportFragment();
+            fragment.setArguments(bundle);
         }
 
         displaySelectedFragment(fragment);

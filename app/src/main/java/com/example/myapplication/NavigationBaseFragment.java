@@ -67,6 +67,7 @@ public class NavigationBaseFragment extends Fragment  implements View.OnClickLis
             public void onClick(View v)
             {
                 Intent intent = new Intent(getActivity(),ScheduledIntentService.class);
+                Toast.makeText(view.getContext(),"Service started and data will reflect shortly!",Toast.LENGTH_LONG).show();
                 getActivity().startService(intent);
             }
         });

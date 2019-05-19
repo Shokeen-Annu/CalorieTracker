@@ -99,28 +99,30 @@ public class UsdaApi {
                 for(int i=0; i <nutrients.length();i++)
                 {
                     JSONObject obj = nutrients.getJSONObject(i);
-                    String nutrient_idCal = "208";
-                    String nutrient_idFat = "204";
-                    if(obj.getString("nutrient_id").equals(nutrient_idCal))
+                    String nutrient_nameCal = "Energy";
+                    String nutrient_nameFat = "Total lipid (fat)";
+                    if(obj.getString("name").equals(nutrient_nameCal))
                     {
                         String calories = obj.getString("value");
                         String calorieUnit=obj.getString("unit");
-                        if(calorieUnit.equals("kcal"))
-                            food.setCalorieamount(Integer.parseInt(calories)* 1000);
-                        else if(calorieUnit.equals("cal"))
-                            food.setCalorieamount(Integer.parseInt(calories));
-                        else
-                            throw new Exception("Something went wrong");
+                        if(calorieUnit.equals("kcal")) {
+                            if (calorieUnit.equals("kcal"))
+                                food.setCalorieamount(Integer.parseInt(calories) * 1000);
+                            else if (calorieUnit.equals("cal"))
+                                food.setCalorieamount(Integer.parseInt(calories));
+                            else
+                                throw new Exception("Something went wrong");
 
-                        JSONArray measures = obj.getJSONArray("measures");
-                        String servingUnit = measures.getJSONObject(0).getString("label");
-                        String servingAmount = measures.getJSONObject(0).getString("value");
-                        food.setServingunit(servingUnit);
-                        servAmtCal = new BigDecimal(Integer.parseInt(servingAmount));
-                        food.setServingamount(servAmtCal);
-                        flagCal = true;
+                            JSONArray measures = obj.getJSONArray("measures");
+                            String servingUnit = measures.getJSONObject(0).getString("label");
+                            String servingAmount = measures.getJSONObject(0).getString("value");
+                            food.setServingunit(servingUnit);
+                            servAmtCal = new BigDecimal(Integer.parseInt(servingAmount));
+                            food.setServingamount(servAmtCal);
+                            flagCal = true;
+                        }
                     }
-                    else if(obj.getString("nutrient_id").equals(nutrient_idFat))
+                    else if(obj.getString("name").equals(nutrient_nameFat))
                     {
                         String fat = obj.getString("value");
                         fatAmount = Double.parseDouble(fat);
