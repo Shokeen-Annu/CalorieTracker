@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class SearchGoogleAPI {
 
-    private static final String API_KEY = "AIzaSyCx9HNyzF_006lrNdry__PCiCcjfdqGCr0";
-    private static final String SEARCH_ID = "014722066971212957494:lj73ddbeok8";
+    private static final String API_KEY = "xxxxxxxxxxxxxxxxxxxxxx";
+    private static final String SEARCH_ID = "xxxxxxxxxxxxxxxxxxxxxxxx";
 
     public static String search(String keyword,String[] params,String[] values)
     {
