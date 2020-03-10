@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class PlacesAPI {
 
-    private static final String API_KEY = "AIzaSyCUHHgC_CuHXFp52v7CgyWjEP7S_RzkULw";
+    private static final String API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxx";
 
     public static String callAPI(String[] params,String[] values)
     {
