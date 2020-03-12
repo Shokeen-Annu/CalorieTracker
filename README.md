@@ -1,4 +1,4 @@
-Calorie Tracker
+Calorie Tracker Android App
 
 It is an android app to track calories consumed by a user in a day, daily steps taken and calculate calories burnt. Following are the 
 functions implemented in the app:
